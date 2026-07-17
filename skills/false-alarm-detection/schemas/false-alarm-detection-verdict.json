@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "False Alarm Detection Verdict",
+  "description": "Classification of a test failure as a known infrastructure false alarm or genuine bug.",
+  "type": "object",
+  "required": ["matched_pattern", "reasoning"],
+  "additionalProperties": false,
+  "properties": {
+    "matched_pattern": {
+      "oneOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Name of the matched false-alarm pattern, or null if no pattern matches."
+    },
+    "reasoning": {
+      "type": "string",
+      "description": "One sentence explaining why this does or does not match a known pattern."
+    }
+  }
+}

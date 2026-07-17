@@ -1,0 +1,8 @@
+{
+  "name": "autoqa-skills",
+  "version": "0.1.0",
+  "description": "AI skills for AutoQA CI/CD test failure analysis and triage",
+  "author": { "name": "opendatahub-io" },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/opendatahub-io/autoqa-skills"
+}

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Failure Matching Verdict",
+  "description": "Result of matching a test failure against historical Jira tickets.",
+  "type": "object",
+  "required": ["ticket_id"],
+  "additionalProperties": false,
+  "properties": {
+    "ticket_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9]+-\\d+$"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Matched Jira ticket ID, or null if no match."
+    }
+  }
+}

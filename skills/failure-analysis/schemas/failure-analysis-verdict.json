@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Failure Analysis Verdict",
+  "description": "Root cause analysis of a CI/CD test failure.",
+  "type": "object",
+  "required": ["summary", "likely_cause", "root_cause_snippet", "confidence"],
+  "additionalProperties": false,
+  "properties": {
+    "summary": {
+      "type": "string",
+      "description": "1-2 sentence description of what failed and why."
+    },
+    "likely_cause": {
+      "type": "string",
+      "description": "Concise categorization of the failure."
+    },
+    "root_cause_snippet": {
+      "type": "string",
+      "description": "Verbatim lines from the log showing the error, prefixed with line numbers."
+    },
+    "confidence": {
+      "type": "string",
+      "enum": ["high", "medium", "low"]
+    }
+  }
+}
