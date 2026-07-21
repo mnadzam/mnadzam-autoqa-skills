@@ -1,0 +1,92 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = []
+# ///
+"""Semantic post-validation for failure-matching verdicts.
+
+Enforces invariants that JSON Schema cannot express:
+- If ticket_id is not null, it must appear in the historical_tickets
+  list from the context file
+
+Usage:
+    uv run --script validate_verdict.py <verdict-path> <context-path>
+
+Exit codes:
+    0  All invariants hold
+    1  Semantic validation failed
+    2  Usage error (bad arguments, missing file, bad JSON)
+"""
+
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+
+def main() -> int:
+    if len(sys.argv) != 3:
+        print(
+            "Usage: validate_verdict.py <verdict-path> <context-path>",
+            file=sys.stderr,
+        )
+        return 2
+
+    verdict_path = Path(sys.argv[1])
+    context_path = Path(sys.argv[2])
+
+    if not verdict_path.exists():
+        print(f"File not found: {verdict_path}", file=sys.stderr)
+        return 2
+
+    if not context_path.exists():
+        print(f"Context file not found: {context_path}", file=sys.stderr)
+        return 2
+
+    try:
+        verdict = json.loads(verdict_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"Cannot read verdict: {e}", file=sys.stderr)
+        return 2
+
+    if not isinstance(verdict, dict):
+        print("Semantic error: verdict must be a JSON object", file=sys.stderr)
+        return 1
+
+    try:
+        context = json.loads(context_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"Cannot read context: {e}", file=sys.stderr)
+        return 2
+
+    ticket_id = verdict.get("ticket_id")
+    if ticket_id is not None:
+        if not isinstance(ticket_id, str):
+            print(
+                f"Semantic error: ticket_id must be a string, got {type(ticket_id).__name__}",
+                file=sys.stderr,
+            )
+            return 1
+
+        historical = context.get("historical_tickets", [])
+        valid_ids = {
+            t["ticket_id"]
+            for t in historical
+            if isinstance(t, dict) and "ticket_id" in t
+        }
+
+        if ticket_id not in valid_ids:
+            print(
+                f"Semantic error: ticket_id '{ticket_id}' is not in the "
+                f"candidate list. Available tickets: "
+                f"{', '.join(sorted(valid_ids)) or 'none'}",
+                file=sys.stderr,
+            )
+            return 1
+
+    print("Verdict semantics valid")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
