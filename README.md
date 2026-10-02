@@ -2,7 +2,7 @@
 
 AI skills for AutoQA CI/CD test failure analysis and triage. These skills are
 consumed by the [agentic-ci](https://github.com/opendatahub-io/agentic-ci)
-Claude runner image and orchestrated by AutoQA.
+coding-agent runner image and orchestrated by AutoQA.
 
 ## Skills
 
@@ -18,7 +18,7 @@ Claude runner image and orchestrated by AutoQA.
 AutoQA orchestrator
     |
     v
-agentic-ci Claude runner (container)
+agentic-ci coding-agent runner (for example, agentic-ci)
     |
     v
 autoqa-skills (this repo, mounted as plugin)
